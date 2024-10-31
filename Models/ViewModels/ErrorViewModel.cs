@@ -1,4 +1,4 @@
-namespace Bookstoret2.Models
+namespace Bookstoret2.Models.ViewModels
 {
     public class ErrorViewModel
     {
