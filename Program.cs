@@ -1,3 +1,6 @@
+using Bookstoret2.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Bookstoret2
 {
     public class Program
@@ -9,7 +12,24 @@ namespace Bookstoret2
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+
+			builder.Services.AddDbContext<BookstoreContext>(options =>
+			{
+				options.UseMySql(
+					builder
+						.Configuration
+						.GetConnectionString("BookstoreContext"),
+					ServerVersion
+						.AutoDetect(
+							builder
+								.Configuration
+								.GetConnectionString("BookstoreContext")
+						)
+				);
+			});
+
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
