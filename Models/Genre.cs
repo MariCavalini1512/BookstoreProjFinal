@@ -6,7 +6,7 @@ namespace Bookstoret2.Models
 	{
 		public int Id { get; set; }
 
-		[Display(Name = "Categoria")]
+		[Display(Name = "Nome")]
 		public string Name{ get; set; }
 
 		//public ICollection<Book> Books { get; set; } = new List<Book>();
