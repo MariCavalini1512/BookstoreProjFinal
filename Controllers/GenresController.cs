@@ -1,7 +1,10 @@
 ﻿using Bookstoret2.Data;
 using Bookstoret2.Models;
+using Bookstoret2.Models.ViewModels;
 using Bookstoret2.Services;
+using Bookstoret2.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bookstoret2.Controllers
@@ -55,5 +58,29 @@ namespace Bookstoret2.Controllers
 			return View(obj);  
         }
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Delete(int id)
+		{
+			try
+			{
+				await _service.RemoveAsync(id);
+				return RedirectToAction(nameof(Index));
+			}
+			catch (IntegrityException ex) 
+			{
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
+        }
+
+		public IActionResult Error(string message)
+		{
+			var viewModel = new ErrorViewModel
+			{
+				Message = message,
+				RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+			};
+			return View(viewModel);
+		}
 	}
 }
