@@ -1,5 +1,6 @@
 ﻿using Bookstoret2.Data;
 using Bookstoret2.Models;
+using Bookstoret2.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstoret2.Services
@@ -28,5 +29,19 @@ namespace Bookstoret2.Services
 		{
 			return await _context.Genres.FindAsync(id);
 		}
-	}
+
+		public async Task RemoveAsync(int id)
+		{
+			try
+			{
+				var obj = await _context.Genres.FindAsync(id);
+				_context.Genres.Remove(obj);
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException ex)
+			{
+				throw new IntegrityException(ex.Message);
+			}
+		}
+	}	
 }
