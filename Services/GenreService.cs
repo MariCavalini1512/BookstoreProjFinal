@@ -18,7 +18,7 @@ namespace Bookstoret2.Services
 		{
 			return await _context.Genres.ToListAsync();
 		}
-		
+
 		public async Task InsertAsync(Genre genre)
 		{
 			_context.Add(genre);
@@ -27,7 +27,17 @@ namespace Bookstoret2.Services
 
 		public async Task<Genre> FindByIdAsync(int id)
 		{
-			return await _context.Genres.FindAsync(id);
+			return await _context
+				.Genres
+				.FirstOrDefaultAsync(x => x.Id == id);
+		}
+
+		public async Task<Genre> FindByIdEagerAsync(int id)
+		{
+			return await _context
+				.Genres
+				.Include(x => x.Books)
+				.FirstOrDefaultAsync(x => x.Id == id);
 		}
 
 		public async Task RemoveAsync(int id)
@@ -63,5 +73,5 @@ namespace Bookstoret2.Services
 				throw new DbConcurrencyException(ex.Message);
 			}
 		}
-	}	
+	}
 }

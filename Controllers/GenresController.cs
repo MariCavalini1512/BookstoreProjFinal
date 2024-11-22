@@ -5,7 +5,7 @@ using Bookstoret2.Services;
 using Bookstoret2.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Bookstoret2.Controllers
 {
@@ -46,17 +46,17 @@ namespace Bookstoret2.Controllers
 		// GET Genres/Delete/x
 		public async Task<IActionResult> Delete(int? id)
 		{
-			if (id is null) 
+			if (id is null)
 			{
 				return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
 			}
 			var obj = await _service.FindByIdAsync(id.Value);
 			if (obj is null)
 			{
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-			return View(obj);  
-        }
+				return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+			}
+			return View(obj);
+		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -67,26 +67,26 @@ namespace Bookstoret2.Controllers
 				await _service.RemoveAsync(id);
 				return RedirectToAction(nameof(Index));
 			}
-			catch (IntegrityException ex) 
+			catch (IntegrityException ex)
 			{
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
-            }
-        }
+				return RedirectToAction(nameof(Error), new { message = ex.Message });
+			}
+		}
 
-        // GET Genres/Edit/x
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
-            }
-            var obj = await _service.FindByIdAsync(id.Value);
-            if (obj is null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-            return View(obj);
-        }
+		// GET Genres/Edit/x
+		public async Task<IActionResult> Edit(int? id)
+		{
+			if (id is null)
+			{
+				return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
+			}
+			var obj = await _service.FindByIdAsync(id.Value);
+			if (obj is null)
+			{
+				return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+			}
+			return View(obj);
+		}
 
 		// POST Genres/Edit/x
 		[HttpPost]
@@ -102,7 +102,7 @@ namespace Bookstoret2.Controllers
 			{
 				return RedirectToAction(nameof(Error), new { message = "Id's não condizentes" });
 			}
-			 
+
 			try
 			{
 				await _service.UpdateAsync(genre);
@@ -114,7 +114,23 @@ namespace Bookstoret2.Controllers
 			}
 		}
 
-        public IActionResult Error(string message)
+		// GET Genres/Details/x
+		public async Task<IActionResult> Details(int? id)
+		{
+			if (id is null)
+			{
+				return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
+			}
+			// tava FindByIdAsync, troca pra FindByIdEagerAsync
+			var obj = await _service.FindByIdEagerAsync(id.Value);
+			if (obj is null)
+			{
+				return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+			}
+			return View(obj);
+		}
+
+		public IActionResult Error(string message)
 		{
 			var viewModel = new ErrorViewModel
 			{
