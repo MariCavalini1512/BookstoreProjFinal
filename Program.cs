@@ -14,24 +14,25 @@ namespace Bookstoret2
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<GenreService>();
+            builder.Services.AddScoped<SeedingService>();
 
-			builder.Services.AddDbContext<BookstoreContext>(options =>
-			{
-				options.UseMySql(
-					builder
-						.Configuration
-						.GetConnectionString("BookstoreContext"),
-					ServerVersion
-						.AutoDetect(
-							builder
-								.Configuration
-								.GetConnectionString("BookstoreContext")
-						)
-				);
-			});
+            builder.Services.AddDbContext<BookstoreContext>(options =>
+            {
+                options.UseMySql(
+                    builder
+                        .Configuration
+                        .GetConnectionString("BookstoreContext"),
+                    ServerVersion
+                        .AutoDetect(
+                            builder
+                                .Configuration
+                                .GetConnectionString("BookstoreContext")
+                        )
+                );
+            });
 
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -39,6 +40,11 @@ namespace Bookstoret2
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+            else
+            {
+                // Criamos um escopo de execução nos serviços, usamos o GetRequiredService para selecionar o serviço a ser executado e selecionamos o método Seed().
+                app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingService>().Seed();
             }
 
             app.UseHttpsRedirection();
